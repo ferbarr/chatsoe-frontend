@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_unnecessary_containers
 
+import 'dart:ffi';
+
 import 'package:chat/widgets/boton_form.dart';
 import 'package:chat/widgets/custom_input.dart';
 import 'package:chat/widgets/logo.dart';
@@ -23,6 +25,7 @@ class RegisterPage extends StatelessWidget {
               children: <Widget>[
                 
                 const Logo(text:'Registro',),
+                // Text('Nombre de la app'),
                 _Form(),
                 const Pie(ruta: 'login',),
                 const Text('Aviso de privacidad',style: TextStyle(fontWeight: FontWeight.w300),)
@@ -49,6 +52,7 @@ class __FormState extends State<_Form> {
   final emailCtrl=TextEditingController();
   final passCtrl=TextEditingController();
   final nameCtrl=TextEditingController();
+  bool _sliderEnable=false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -73,12 +77,39 @@ class __FormState extends State<_Form> {
           isPassword: true, 
           textController: passCtrl,
           ),
+           SwitchListTile.adaptive(
+            activeColor: Colors.blue,
+            title: const Text('Acepto privacidad'),
+            value: _sliderEnable,
+            onChanged: (value) => setState(() {
+                  _sliderEnable = value;
+                  print(_sliderEnable);
+                })),
 
-            BotonForm(fn: (){
+
+// Checkbox(
+//   activeColor: Colors.blue,
+//           value: _sliderEnable,
+//           onChanged: (value){
+//             setState(() {
+//               _sliderEnable=value??true;
+//             });
+//           }
+//           ),
+          //   BotonForm(fn: (){
+          //     print(emailCtrl.text);
+          //     print(passCtrl.text);
+          //     return 4;
+          //  }, text: 'Registrar',)
+
+           BotonForm(fn: 
+            _sliderEnable?
+            (){
               print(emailCtrl.text);
               print(passCtrl.text);
+              Navigator.pushReplacementNamed(context, 'usuarios');
               return 4;
-           }, text: 'Registrar',)
+           }:null, text: 'Registrar',)
          
        
          
