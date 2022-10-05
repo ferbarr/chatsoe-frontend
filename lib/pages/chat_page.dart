@@ -22,6 +22,7 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.black),
         centerTitle:true,
@@ -102,7 +103,7 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
               :Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: IconTheme(
-                  data: IconThemeData(color: Colors.blue[400]),
+                  data: IconThemeData(color: Color.fromRGBO(120,175,129,1)),
                   child: IconButton(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,

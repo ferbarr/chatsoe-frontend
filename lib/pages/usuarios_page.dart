@@ -1,6 +1,5 @@
 import 'package:chat/models/usuario.dart';
 import 'package:chat/widgets/side_menu.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -13,9 +12,9 @@ class UsuariosPage extends StatefulWidget {
 }
 
 class _UsuariosPageState extends State<UsuariosPage> {
-  RefreshController _refreshController=RefreshController(initialRefresh: false);//Guardar controlador del push refresh
+  final RefreshController _refreshController=RefreshController(initialRefresh: false);//Guardar controlador del push refresh
   final usuarios=[//Guardar los usuarios
-    Usuario(online: true, email: 'Marisela@gmail.com', nombre: 'Marisela', number: 456, uid: '1'),
+    Usuario(online: true, email: 'Marisela@gmail.com', nombre: 'Marisela Aguilar Rodriguez', number: 456, uid: '1'),
     Usuario(online: false, email: 'Anabel@gmail.com', nombre: 'Anabel', number: 456, uid: '2'),
     Usuario(online: true, email: 'Daniel@gmail.com', nombre: 'Daniel Filoteo', number: 456, uid: '3'),
   ];
@@ -63,8 +62,8 @@ class _UsuariosPageState extends State<UsuariosPage> {
   ListTile _usuarioListTile(Usuario usuario) {//Metodo para ListTile y recibe info del usuario
     return ListTile(
       onTap: (){Navigator.pushNamed(context, 'chat');},
-        title: Text(usuario.nombre),
-        subtitle: Text(usuario.email),
+        title: Text(usuario.nombre,style: const TextStyle(fontSize: 16),),
+        // subtitle: Text(usuario.email),
         leading: CircleAvatar(
           backgroundColor: Colors.blue[100],
           child: Text(usuario.nombre.substring(0,2)),

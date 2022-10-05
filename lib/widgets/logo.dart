@@ -14,7 +14,7 @@ class Logo extends StatelessWidget {
           children:  [
             const Image(image: AssetImage('assets/logo.png'),),
             const SizedBox(height: 20,),
-            const Text('Utsoe',style: TextStyle(fontSize: 30,),),
+            const Text('Chatsoe',style: TextStyle(fontSize: 30,color: Colors.blue),),
             Text(text,style: const TextStyle(fontSize: 20,),)
           ],
         ),
