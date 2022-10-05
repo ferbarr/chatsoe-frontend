@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class BotonForm extends StatelessWidget {
@@ -16,7 +14,7 @@ class BotonForm extends StatelessWidget {
               primary: Colors.blue,
               shape: const StadiumBorder(),
             ),
-            onPressed: fn,
+            onPressed: fn,//Recibe funcion
              child: Container(
               width: double.infinity,
               height: 50,

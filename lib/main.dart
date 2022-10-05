@@ -1,7 +1,13 @@
+
 import 'package:chat/routes/routes.dart';
+
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+
+void main() async{
+  
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -11,6 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Chat',
       initialRoute: 'login',
       routes: appRoutes,
+     
     );
   }
 }

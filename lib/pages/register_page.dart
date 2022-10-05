@@ -13,19 +13,19 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: const Color(0xffF2F2F2),
-      body: SafeArea(//Salvar area
-        child: Container(
-          height: MediaQuery.of(context).size.height*0.9,//Obtener el 90% del alto de la pantalla
+      body: Center(
+        child: SafeArea(//Salvar area
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 
-                const Logo(text:'Registro',),
+                // const Logo(text:'Registro',),
+                const Text('Chatsoe',style: TextStyle(fontSize: 30),),
                 _Form(),
                 const Pie(ruta: 'login',),
-                const Text('Aviso de privacidad',style: TextStyle(fontWeight: FontWeight.w300),)
+          
               ],
             ),
           ),
@@ -49,6 +49,8 @@ class __FormState extends State<_Form> {
   final emailCtrl=TextEditingController();
   final passCtrl=TextEditingController();
   final nameCtrl=TextEditingController();
+  final numCtrl=TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -57,32 +59,36 @@ class __FormState extends State<_Form> {
       child: Column(
         children:    <Widget>[
           CustomInput(icon: Icons.perm_identity, 
-          placeholder: 'Nombre', 
-          textController: nameCtrl,
-          keyboardType: TextInputType.text,
+            placeholder: 'Nombre', 
+            textController: nameCtrl,
+            keyboardType: TextInputType.text,
           ),
-
+          CustomInput(icon: Icons.phone_outlined,
+            placeholder: 'Número', 
+            textController: numCtrl,
+            keyboardType: TextInputType.number,
+          ),
           CustomInput(icon: Icons.mail_outline, 
-          placeholder: 'Correo electronico', 
-          textController: emailCtrl,
-          keyboardType: TextInputType.emailAddress,
+            placeholder: 'Correo electronico', 
+            textController: emailCtrl,
+            keyboardType: TextInputType.emailAddress,
           ),
 
           CustomInput(icon: Icons.lock_outline, 
-          placeholder: 'Contraseña',
-          isPassword: true, 
-          textController: passCtrl,
+            placeholder: 'Contraseña',
+            isPassword: true, 
+            textController: passCtrl,
           ),
 
-            BotonForm(fn: (){
+           BotonForm(fn:        
+            (){
               print(emailCtrl.text);
               print(passCtrl.text);
+              print(nameCtrl.text);
+              print(numCtrl.text);
+              Navigator.pushReplacementNamed(context, 'usuarios');
               return 4;
            }, text: 'Registrar',)
-         
-       
-         
-          
         ],
       ),
     );
@@ -110,8 +116,7 @@ class Pie extends StatelessWidget {
             onTap: (){
               Navigator.pushReplacementNamed(context, ruta);
             },
-                      
-                )
+          )
 
         ],
       ),

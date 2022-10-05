@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Logo(text: 'Ingreso',),
+                const Logo(text: '',),
                 _Form(),
                 const Pie(ruta: 'register',),
               ],
@@ -68,7 +68,7 @@ class __FormState extends State<_Form> {
             BotonForm(fn: (){
               print(emailCtrl.text);
               print(passCtrl.text);
-              return 4;
+              Navigator.pushReplacementNamed(context, 'usuarios');
            }, text: 'Ingresar',)
          
        
