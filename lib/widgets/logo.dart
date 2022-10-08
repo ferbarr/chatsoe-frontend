@@ -8,13 +8,13 @@ class Logo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.only(top: 50),
+        // margin: const EdgeInsets.only(top: 50),
         width: 170,
         child: Column(
           children:  [
             const Image(image: AssetImage('assets/logo.png'),),
             const SizedBox(height: 20,),
-            const Text('Chatsoe',style: TextStyle(fontSize: 30,color: Colors.blue),),
+            // const Text('Chatsoe',style: TextStyle(fontSize: 30,color: Colors.blue),),
             Text(text,style: const TextStyle(fontSize: 20,),)
           ],
         ),

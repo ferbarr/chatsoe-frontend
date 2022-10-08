@@ -1,9 +1,12 @@
 // ignore_for_file: avoid_unnecessary_containers
 
+import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:chat/services/auth_service.dart';
 import 'package:chat/widgets/boton_form.dart';
 import 'package:chat/widgets/custom_input.dart';
 import 'package:chat/widgets/logo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatelessWidget {
    
@@ -21,8 +24,8 @@ class RegisterPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 
-                // const Logo(text:'Registro',),
-                const Text('Chatsoe',style: TextStyle(fontSize: 30),),
+                const Logo(text:'',),
+                // const Text('Chatsoe',style: TextStyle(fontSize: 30),),
                 _Form(),
                 const Pie(ruta: 'login',),
           
@@ -49,12 +52,13 @@ class __FormState extends State<_Form> {
   final emailCtrl=TextEditingController();
   final passCtrl=TextEditingController();
   final nameCtrl=TextEditingController();
-  final numCtrl=TextEditingController();
+  final phoneCtrl=TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
+    final authService=Provider.of<AuthService>(context);
     return Container(
-      margin: const EdgeInsets.only(top:10),
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
         children:    <Widget>[
@@ -62,33 +66,45 @@ class __FormState extends State<_Form> {
             placeholder: 'Nombre', 
             textController: nameCtrl,
             keyboardType: TextInputType.text,
+       
           ),
           CustomInput(icon: Icons.phone_outlined,
             placeholder: 'Número', 
-            textController: numCtrl,
+            textController: phoneCtrl,
             keyboardType: TextInputType.number,
+          
           ),
           CustomInput(icon: Icons.mail_outline, 
             placeholder: 'Correo electronico', 
             textController: emailCtrl,
             keyboardType: TextInputType.emailAddress,
+         
           ),
 
           CustomInput(icon: Icons.lock_outline, 
             placeholder: 'Contraseña',
             isPassword: true, 
             textController: passCtrl,
+         
           ),
 
-           BotonForm(fn:        
-            (){
-              print(emailCtrl.text);
-              print(passCtrl.text);
-              print(nameCtrl.text);
-              print(numCtrl.text);
-              Navigator.pushReplacementNamed(context, 'usuarios');
-              return 4;
-           }, text: 'Registrar',)
+           BotonForm(fn:authService.registrando
+            ?null
+            : ()async{
+              FocusScope.of(context).unfocus();//Quitar el foco donde se encuentre
+             final registroOk= await authService.register(nameCtrl.text.trim(),emailCtrl.text.trim(),passCtrl.text.trim(),phoneCtrl.text.trim(),true);
+          
+             if(registroOk==true){
+
+              // Navigator.pushReplacementNamed(context, 'usuarios');
+         
+             }else {
+              mostrarAlerta(context,'Datos incorrectos',registroOk['msg']);
+             }
+             
+             }
+         
+            , text: 'Registrar',)
         ],
       ),
     );

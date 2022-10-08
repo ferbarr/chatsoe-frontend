@@ -1,4 +1,5 @@
 
+import 'package:chat/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 
@@ -23,6 +24,7 @@ class _SideMenuState extends State<SideMenu> {
           },),
          
           ListTile(leading: const Icon(Icons.logout,),title: const Text('Salir'),onTap: (){
+            AuthService.deleteToken();
             Navigator.pushReplacementNamed(context, 'login');}),
           
         ],
