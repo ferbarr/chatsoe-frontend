@@ -1,9 +1,5 @@
-import 'package:chat/pages/chat_page.dart';
-import 'package:chat/pages/loading_page.dart';
-import 'package:chat/pages/login_page.dart';
-import 'package:chat/pages/profile_page.dart';
-import 'package:chat/pages/register_page.dart';
-import 'package:chat/pages/usuarios_page.dart';
+
+import 'package:chat/pages/pages.dart';
 import 'package:flutter/material.dart';
 
 final Map<String, Widget Function(BuildContext)> appRoutes={
@@ -12,6 +8,6 @@ final Map<String, Widget Function(BuildContext)> appRoutes={
   'login':(_)=>const LoginPage(),
   'register':(_)=> const RegisterPage(),
   'loading':(_)=>const LoadingPage(),
-  'profile':(_)=>const ProfileScreen()
+  'profile':(_)=> const ProfilePage()
 };
 

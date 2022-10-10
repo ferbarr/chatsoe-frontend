@@ -1,6 +1,6 @@
-import 'package:chat/models/usuario.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/widgets/side_menu.dart';
+import 'package:chat/models/models.dart';
+import 'package:chat/services/services.dart';
+import 'package:chat/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -14,15 +14,20 @@ class UsuariosPage extends StatefulWidget {
 }
 
 class _UsuariosPageState extends State<UsuariosPage> {
+  final usuarioService=UsuariosService();
   final RefreshController _refreshController=RefreshController(initialRefresh: false);//Guardar controlador del push refresh
-  final usuarios=[//Guardar los usuarios
-    Usuario(online: true, email: 'Marisela@gmail.com', name: 'Marisela Aguilar Rodriguez', phone: '456', uid: '1', lic: true, photo: null),
-    Usuario(online: false, email: 'Anabel@gmail.com', name: 'Anabel', phone: '456', uid: '2', lic: false, photo: null),
-    Usuario(online: true, email: 'Daniel@gmail.com', name: 'Daniel Filoteo', phone: '456', uid: '3', lic: false, photo: null),
-  ];
+  List<Usuario> usuarios=[];
+
+  @override
+  void initState() {
+    _cargarUsuarios();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final authService=Provider.of<AuthService>(context);
+    final socketService=Provider.of<SocketService>(context);
     final usuario=authService.usuario;
     return  Scaffold(
       drawer: const SideMenu(),
@@ -36,7 +41,11 @@ class _UsuariosPageState extends State<UsuariosPage> {
         actions: <Widget>[
           Container(
             margin: const EdgeInsets.only(right: 10),
-            child: Icon(Icons.check_circle,color:Colors.blue[400]),
+            child: (socketService.serverStatus==ServerStatus.Online)
+            ?const Icon(Icons.offline_bolt,color:Colors.green)
+            :const Icon(Icons.offline_bolt,color:Colors.red)
+            
+            
           )
         ],
       ),
@@ -65,7 +74,12 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   ListTile _usuarioListTile(Usuario usuario) {//Metodo para ListTile y recibe info del usuario
     return ListTile(
-      onTap: (){Navigator.pushNamed(context, 'chat');},
+      onTap: (){
+        final chatService=Provider.of<ChatService>(context,listen: false);
+        chatService.usuaroPara=usuario;
+        Navigator.pushNamed(context, 'chat');
+        
+        },
         title: Text(usuario.name,style: const TextStyle(fontSize: 16),),
         // subtitle: Text(usuario.email),
         leading: CircleAvatar(
@@ -84,11 +98,9 @@ class _UsuariosPageState extends State<UsuariosPage> {
   }
 
   _cargarUsuarios()async{
-    await Future.delayed(const Duration(milliseconds: 1000));//Temporizador de prueba
-    usuarios.add(Usuario(online: true, email: 'Fernando@gmail.com', name: 'Fernando', phone: '456', uid: '1', lic: false, photo: null),);
-    setState(() {
-      
-    });
+    
+    usuarios=await usuarioService.getUsuarios();
+    setState(() { });
     _refreshController.refreshCompleted();//Cambiamos estado de controlador
 
 

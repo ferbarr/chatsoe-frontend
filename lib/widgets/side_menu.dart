@@ -1,6 +1,6 @@
-
-import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/services.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class SideMenu extends StatefulWidget {
@@ -14,6 +14,7 @@ class _SideMenuState extends State<SideMenu> {
   
   @override
   Widget build(BuildContext context) {
+    final socketService=Provider.of<SocketService>(context);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -24,6 +25,7 @@ class _SideMenuState extends State<SideMenu> {
           },),
          
           ListTile(leading: const Icon(Icons.logout,),title: const Text('Salir'),onTap: (){
+            socketService.disconnect();
             AuthService.deleteToken();
             Navigator.pushReplacementNamed(context, 'login');}),
           
@@ -34,23 +36,11 @@ class _SideMenuState extends State<SideMenu> {
   }
 
   DrawerHeader _drawerHeader() {
-    return   DrawerHeader(
+    return   const DrawerHeader(
           child: null,
           decoration:BoxDecoration(
             color: Color.fromRGBO(37,80,121,0.8),
-          
-            
-          ) ,
-          // child: Container(
-          //   decoration: const BoxDecoration(
-          //     // color: Colors.pink
-          //     image: DecorationImage(
-          //       image: AssetImage('assets/menu-img.jpg'),
-          //       fit: BoxFit.cover
-          //     )
-          //   ),
-          // )
-          
+          ) ,          
           );
   }
 }

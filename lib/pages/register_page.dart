@@ -1,10 +1,11 @@
-// ignore_for_file: avoid_unnecessary_containers
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:chat/helpers/mostrar_alerta.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/widgets/boton_form.dart';
-import 'package:chat/widgets/custom_input.dart';
-import 'package:chat/widgets/logo.dart';
+import 'package:chat/services/services.dart';
+
+import 'package:chat/ui/input_decoration.dart';
+import 'package:chat/widgets/widgets.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,22 +16,35 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      backgroundColor: const Color(0xffF2F2F2),
-      body: Center(
-        child: SafeArea(//Salvar area
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                
-                const Logo(text:'',),
-                // const Text('Chatsoe',style: TextStyle(fontSize: 30),),
-                _Form(),
-                const Pie(ruta: 'login',),
-          
-              ],
-            ),
+      backgroundColor:const Color.fromARGB(255, 232, 232, 232),
+      body: AuthBackground(
+        logo: false,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 150,),
+              CardContainer(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10,),
+                    Text('Chatsoe',style: Theme.of(context).textTheme.headline4,),
+                    const SizedBox(height: 30,),
+                    const _LoginForm()
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10,),
+               TextButton(
+                onPressed: ()=>Navigator.pushReplacementNamed(context, 'login'),
+                style: ButtonStyle(overlayColor: 
+                MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
+                shape: MaterialStateProperty.all(const StadiumBorder())
+                ),
+                child: const Text('Ya tengo cuenta',style: TextStyle(fontSize: 18,color: Colors.black87),))
+
+            ],
+           
+        
           ),
         ),
       )
@@ -39,104 +53,105 @@ class RegisterPage extends StatelessWidget {
 }
 
 
-// Formulario 
-class _Form extends StatefulWidget {
-  _Form({Key? key}) : super(key: key);
-
-  @override
-  State<_Form> createState() => __FormState();
-}
-
-class __FormState extends State<_Form> {
-  // Instanciar controladores, para obtener valors del input
-  final emailCtrl=TextEditingController();
-  final passCtrl=TextEditingController();
-  final nameCtrl=TextEditingController();
-  final phoneCtrl=TextEditingController();
-  
+class _LoginForm extends StatelessWidget {
+  const _LoginForm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final authService=Provider.of<AuthService>(context);
+    final socketService=Provider.of<SocketService>(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: Column(
-        children:    <Widget>[
-          CustomInput(icon: Icons.perm_identity, 
-            placeholder: 'Nombre', 
-            textController: nameCtrl,
-            keyboardType: TextInputType.text,
-       
-          ),
-          CustomInput(icon: Icons.phone_outlined,
-            placeholder: 'Número', 
-            textController: phoneCtrl,
-            keyboardType: TextInputType.number,
-          
-          ),
-          CustomInput(icon: Icons.mail_outline, 
-            placeholder: 'Correo electronico', 
-            textController: emailCtrl,
-            keyboardType: TextInputType.emailAddress,
-         
-          ),
+      child: Form(
+        key: authService.registerKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          children: [
+            TextFormField(
+              onChanged: (value){
+                authService.name=value;
+              },
+              validator: (value){
+                return (value!='')?null:'Ingresa tu nombre';
+              },
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              decoration: InputDecorations.authInputDecoration(//Reutilizamos diseño
+                hintText: 'Ingresa tu nombre', labelText: 'Nombre', prefixIcon: Icons.perm_identity)
+            ),
+            const SizedBox(height: 10,),
+            TextFormField(
+              onChanged: (value){
+                authService.phone=value;
+              },
+              validator: (value){
+                return (value!.length==10)?null:'Formato de teléfono inválido';
+              },
+              autocorrect: false,
+              keyboardType: TextInputType.number,
+              decoration: InputDecorations.authInputDecoration(//Reutilizamos diseño
+                hintText: 'Ingresa tu télefono', labelText: 'Télefono', prefixIcon: Icons.phone_outlined)
+            ),
+            const SizedBox(height: 10,),
+            TextFormField(
+              onChanged: (value){
+                authService.email=value;
+              },
+              validator: (value){
+                String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                RegExp regExp  = RegExp(pattern);
+                return regExp.hasMatch(value??'')?null:'Formato de correo no válido';
+              },
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecorations.authInputDecoration(//Reutilizamos diseño
+                hintText: 'Ingresa tu correo', labelText: 'Correo electrónico', prefixIcon: Icons.email_outlined)
+            ),
+            const SizedBox(height: 10,),
+            TextFormField(
+              onChanged: (value){
+                authService.password=value;
+              },
+              validator: (value){
+                return (value!.length>=6)?null:'Mínimo 6 caracteres';
+              },
+              obscureText: true,
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecorations.authInputDecoration(//Reutilizamos diseño
+                hintText: 'Ingresa tu contraseña', labelText: 'Contraseña', prefixIcon: Icons.key_outlined)
+            ),
+            const SizedBox(height: 10,),
+            MaterialButton(
+              onPressed: 
+              authService.autenticando
+              ?null
+              :
+              ()async{
+                if(authService.isValidRegister()){
+                  FocusScope.of(context).unfocus();//Quitar el foco donde se encuentre
+                 final registroOk= await authService.register();
+                 if(registroOk==true){
+                    socketService.connect();
+                    Navigator.pushReplacementNamed(context, 'usuarios');
+                 }else {
+                    mostrarAlerta(context,'Datos incorrectos',registroOk['msg']);
+                  }
 
-          CustomInput(icon: Icons.lock_outline, 
-            placeholder: 'Contraseña',
-            isPassword: true, 
-            textController: passCtrl,
-         
-          ),
+                }                 
+              },
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              disabledColor: Colors.grey,
+              elevation: 0,
+              color: const Color.fromARGB(255, 48, 92, 132),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 70),
+                child:  Text(authService.autenticando?'Espere...':'Registrar',style: TextStyle(color:Colors.white)),
 
-           BotonForm(fn:authService.registrando
-            ?null
-            : ()async{
-              FocusScope.of(context).unfocus();//Quitar el foco donde se encuentre
-             final registroOk= await authService.register(nameCtrl.text.trim(),emailCtrl.text.trim(),passCtrl.text.trim(),phoneCtrl.text.trim(),true);
-          
-             if(registroOk==true){
-
-              // Navigator.pushReplacementNamed(context, 'usuarios');
-         
-             }else {
-              mostrarAlerta(context,'Datos incorrectos',registroOk['msg']);
-             }
-             
-             }
-         
-            , text: 'Registrar',)
-        ],
+              ),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
-
-
-class Pie extends StatelessWidget {
-  final String ruta;
-  const Pie({Key? key, required this.ruta}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children:  <Widget>[
-          
-          GestureDetector(
-            child: Text('¿Ya tienes una cuenta?',
-                      style: TextStyle(
-                            color:Colors.blue.shade600,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
-            onTap: (){
-              Navigator.pushReplacementNamed(context, ruta);
-            },
-          )
-
-        ],
-      ),
-    );
-  }
-}
-

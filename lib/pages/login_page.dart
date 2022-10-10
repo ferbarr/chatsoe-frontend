@@ -1,10 +1,10 @@
-// ignore_for_file: avoid_unnecessary_containers, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:chat/helpers/mostrar_alerta.dart';
-import 'package:chat/services/auth_service.dart';
-import 'package:chat/widgets/boton_form.dart';
-import 'package:chat/widgets/custom_input.dart';
-import 'package:chat/widgets/logo.dart';
+import 'package:chat/services/services.dart';
+import 'package:chat/ui/input_decoration.dart';
+import 'package:chat/widgets/widgets.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,22 +15,36 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      backgroundColor: const Color(0xffF2F2F2),
-      body: Center(
-        child: SafeArea(//Salvar area
-          child: Container(
-            height: MediaQuery.of(context).size.height*0.9,//Obtener el 90% del alto de la pantalla
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Logo(text: '',),
-                  _Form(),
-                  const Pie(ruta: 'register',),
-                ],
+      
+      backgroundColor:const Color.fromARGB(255, 232, 232, 232),
+      body: AuthBackground(
+        logo: true,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 200,),
+              CardContainer(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10,),
+                    Text('Chatsoe',style: Theme.of(context).textTheme.headline4,),
+                    const SizedBox(height: 30,),
+                    const _LoginForm()
+                  ],
+                ),
               ),
-            ),
+              const SizedBox(height: 10,),
+               TextButton(
+                onPressed: ()=>Navigator.pushReplacementNamed(context, 'register'),
+                style: ButtonStyle(overlayColor: 
+                MaterialStateProperty.all(const Color.fromARGB(255, 48, 92, 132).withOpacity(0.1)),
+                shape: MaterialStateProperty.all(const StadiumBorder())
+                ),
+                child: const Text('Crear cuenta',style: TextStyle(fontSize: 18,color: Colors.black87),))
+
+            ],
+           
+        
           ),
         ),
       )
@@ -39,93 +53,81 @@ class LoginPage extends StatelessWidget {
 }
 
 
-// Formulario 
-class _Form extends StatefulWidget {
-  _Form({Key? key}) : super(key: key);
+class _LoginForm extends StatelessWidget {
+  const _LoginForm({Key? key}) : super(key: key);
 
-  @override
-  State<_Form> createState() => __FormState();
-}
-
-class __FormState extends State<_Form> {
-  // Instanciar controladores, para obtener valors del input
-  final emailCtrl=TextEditingController();
-  final passCtrl=TextEditingController();
   @override
   Widget build(BuildContext context) {
     final authService=Provider.of<AuthService>(context);
+    final socketService=Provider.of<SocketService>(context);
+    
     return Container(
-   
-      padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: Column(
-        children:    <Widget>[
-          CustomInput(icon: Icons.mail_outline, 
-          placeholder: 'Correo electronico', 
-          textController: emailCtrl,
-          keyboardType: TextInputType.emailAddress,
-         
-          ),
+      child: Form(
+        key: authService.loginKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          children: [
+            TextFormField(
+              onChanged: (value){
+                authService.email=value;
+              },
+              validator: (value){
+                String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                RegExp regExp  = RegExp(pattern);
+                return regExp.hasMatch(value??'')?null:'Formato de correo no válido';
+              },
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecorations.authInputDecoration(//Reutilizamos diseño
+                hintText: 'Ingresa tu correo', labelText: 'Correo electrónico', prefixIcon: Icons.email_outlined)
+            ),
+            const SizedBox(height: 30,),
+            TextFormField(
+              onChanged: (value){
+                authService.password=value;
+              },
+              validator: (value){
+                return (value!=null && value.length>=6)?null:'Mínimo 6 caracteres';
+              },
+              obscureText: true,
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecorations.authInputDecoration(//Reutilizamos diseño
+                hintText: 'Ingresa tu contraseña', labelText: 'Contraseña', prefixIcon: Icons.key_outlined)
+            ),
+            const SizedBox(height: 30,),
+            MaterialButton(
+              onPressed: 
+              authService.autenticando
+              ?null
+              :
+              ()async{
+                if(authService.isValidLogin()){
+                 FocusScope.of(context).unfocus();//Quitar el foco donde se encuentre
+                 final loginOk= await authService.login();
+                 if(loginOk==true){
+                  // Conectar socket
+                  socketService.connect();
 
-          CustomInput(icon: Icons.lock_outline, 
-          placeholder: 'Contraseña',
-          isPassword: true, 
-          textController: passCtrl,
-         
-          ),
+                    Navigator.pushReplacementNamed(context, 'usuarios');
+                  }else{
+                    mostrarAlerta(context,'Datos incorrectos',loginOk['msg']);
+                  }
 
-            BotonForm(fn:authService.autenticando
-            ?null
-            : ()async{
-              FocusScope.of(context).unfocus();//Quitar el foco donde se encuentre
-             final loginOk= await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
-          
-             if(loginOk==true){
+                }                 
+              },
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              disabledColor: Colors.grey,
+              elevation: 0,
+              color: const Color.fromARGB(255, 48, 92, 132),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 70),
+                child: Text(authService.autenticando?'Espere...':'Ingresar',style: TextStyle(color:Colors.white)),
 
-              Navigator.pushReplacementNamed(context, 'usuarios');
-
-             }else{
-              mostrarAlerta(context,'Datos incorrectos',loginOk['msg']);
-             }
-             
-             }
-         
-            , text: 'Ingresar',)
-         
-       
-         
-          
-        ],
-      ),
-    );
-  }
-}
-
-
-
-class Pie extends StatelessWidget {
-  final String ruta;
-  const Pie({Key? key, required this.ruta}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children:  <Widget>[
-          const SizedBox(height: 5,),
-          GestureDetector(
-            child: Text('Crear una cuenta',
-                      style: TextStyle(
-                            color:Colors.blue.shade600,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
-            onTap: (){
-              Navigator.pushReplacementNamed(context, ruta);
-            },
-                      
-                )
-
-        ],
+              ),
+              ),
+          ],
+        ),
       ),
     );
   }
