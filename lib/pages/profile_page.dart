@@ -23,11 +23,13 @@ class ProfilePage extends StatelessWidget {
     final authService=Provider.of<AuthService>(context);
     final usuario=authService.usuario;
     return  Scaffold(
+      
       backgroundColor:const Color.fromARGB(255, 232, 232, 232),
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black), 
-        elevation: 1,
-        backgroundColor: Colors.white,
+     
+        centerTitle: true,
+        title: Text(usuario.name),
+        // backgroundColor: Colors.white,
       ),
       body:Center(
         child: SingleChildScrollView(
@@ -201,7 +203,7 @@ class _LoginForm extends StatelessWidget {
               elevation: 0,
               color: const Color.fromARGB(255, 48, 92, 132),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 90),
+                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 70),
                 child:  Text(authService.autenticando?'Espere...':'Actualizar',style: const TextStyle(color:Colors.white)),
 
               ),

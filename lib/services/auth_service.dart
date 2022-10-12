@@ -56,13 +56,13 @@ class AuthService extends ChangeNotifier{
    notifyListeners();
  }
 
-void showImage(String path){
-  if(path!=''){
-    usuario.photo=path;
-    newPictureFile=File.fromUri(Uri(path: path));
-    notifyListeners();
-  }
-}
+// void showImage(String path){
+//   if(path!=''){
+//     usuario.photo=path;
+//     newPictureFile=File.fromUri(Uri(path: path));
+//     notifyListeners();
+//   }
+// }
 
   Future login()async{
     autenticando=true;

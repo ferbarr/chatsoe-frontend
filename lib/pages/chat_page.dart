@@ -75,7 +75,7 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
             CircleAvatar(
               maxRadius: 14,
               backgroundColor: Colors.blue[100],
-              child:  Text(usuarioPara.name.substring(0,2),style: TextStyle(fontSize: 12),
+              child:  Text(usuarioPara.name.substring(0,2),style: const TextStyle(fontSize: 12),
               ),
             ),
             const SizedBox(height: 3,),
@@ -83,6 +83,12 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
 
           ],
         ),
+        actions: [
+          IconButton(
+            onPressed:(){},
+            icon: const Icon(Icons.phone_outlined,size: 30,color:Colors.green),
+          ),
+        ],
       ),
       body: Container(
         child: Column(

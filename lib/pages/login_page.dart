@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:chat/models/models.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/ui/input_decoration.dart';
 import 'package:chat/widgets/widgets.dart';
@@ -108,8 +109,7 @@ class _LoginForm extends StatelessWidget {
                  if(loginOk==true){
                   // Conectar socket
                   socketService.connect();
-
-                    Navigator.pushReplacementNamed(context, 'usuarios');
+                  Navigator.pushReplacementNamed(context, 'usuarios');
                   }else{
                     mostrarAlerta(context,'Datos incorrectos',loginOk['msg']);
                   }
@@ -122,7 +122,7 @@ class _LoginForm extends StatelessWidget {
               color: const Color.fromARGB(255, 48, 92, 132),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 70),
-                child: Text(authService.autenticando?'Espere...':'Ingresar',style: TextStyle(color:Colors.white)),
+                child: Text(authService.autenticando?'Espere...':'Ingresar',style: const TextStyle(color:Colors.white)),
 
               ),
               ),

@@ -8,6 +8,8 @@ final Map<String, Widget Function(BuildContext)> appRoutes={
   'login':(_)=>const LoginPage(),
   'register':(_)=> const RegisterPage(),
   'loading':(_)=>const LoadingPage(),
-  'profile':(_)=> const ProfilePage()
+  'profile':(_)=> const ProfilePage(),
+  'slide':(_)=>const SlideShowPage(),
+  'terminos':(_)=>const TerminosPage()
 };
 

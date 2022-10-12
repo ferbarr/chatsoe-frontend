@@ -1,5 +1,19 @@
 
 
+// import 'dart:io';
+
+// class Environment{
+//   static String apiUrl=Platform.isAndroid 
+//   ?'https://chatsoe.herokuapp.com/chatsoe'
+//   :'https://chatsoe.herokuapp.com/chatsoe';
+
+//   static String socketUrl=Platform.isAndroid 
+//   ?'https://chatsoe.herokuapp.com'
+//   :'https://chatsoe.herokuapp.com';
+// }
+
+
+
 import 'dart:io';
 
 class Environment{

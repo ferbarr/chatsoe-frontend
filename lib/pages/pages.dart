@@ -1,3 +1,7 @@
+export 'package:chat/pages/terminos_page.dart';
+
+export 'package:chat/pages/slideshow_page.dart';
+
 export 'package:chat/pages/chat_page.dart';
 export 'package:chat/pages/loading_page.dart';
 export 'package:chat/pages/login_page.dart';

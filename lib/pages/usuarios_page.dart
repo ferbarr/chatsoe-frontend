@@ -1,6 +1,5 @@
 import 'package:chat/models/models.dart';
 import 'package:chat/services/services.dart';
-import 'package:chat/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -15,12 +14,19 @@ class UsuariosPage extends StatefulWidget {
 
 class _UsuariosPageState extends State<UsuariosPage> {
   final usuarioService=UsuariosService();
+  late SocketService socketService;
   final RefreshController _refreshController=RefreshController(initialRefresh: false);//Guardar controlador del push refresh
   List<Usuario> usuarios=[];
 
   @override
   void initState() {
     _cargarUsuarios();
+
+  socketService=Provider.of<SocketService>(context,listen: false);
+    
+  socketService.socket.on('update-estado', (data)=>{_cargarUsuarios()} );
+
+
     super.initState();
   }
 
@@ -30,23 +36,35 @@ class _UsuariosPageState extends State<UsuariosPage> {
     final socketService=Provider.of<SocketService>(context);
     final usuario=authService.usuario;
     return  Scaffold(
-      drawer: const SideMenu(),
+      
       appBar: AppBar(
+        leading: Container(
+            margin: const EdgeInsets.only(right: 10),
+            child: 
+             Icon(Icons.offline_bolt,color:(socketService.serverStatus==ServerStatus.Online)
+            ?Colors.green
+            :Colors.red
+            )
+            ),
+            
+            
+          
         iconTheme: const IconThemeData(color: Colors.black),
         centerTitle: true,
-        title:  Text(usuario.name,
-          style: const TextStyle(color: Colors.black54),),
+        title:  GestureDetector(
+          onTap: ()=>Navigator.pushNamed(context, 'profile'),
+          child: Text(usuario.name,
+            style: const TextStyle(color: Colors.black54),),
+        ),
         elevation: 1,
         backgroundColor: Colors.white,
         actions: <Widget>[
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            child: (socketService.serverStatus==ServerStatus.Online)
-            ?const Icon(Icons.offline_bolt,color:Colors.green)
-            :const Icon(Icons.offline_bolt,color:Colors.red)
-            
-            
-          )
+          IconButton(icon:const Icon(Icons.logout_outlined,) , onPressed: () { 
+          socketService.disconnect();
+          AuthService.deleteToken();
+          Navigator.pushReplacementNamed(context, 'login');
+         },)
+          
         ],
       ),
       body: SmartRefresher(
