@@ -69,23 +69,36 @@ class _Avatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
          children:[
+
+          ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            
+            child: Container(
+              width: 150,
+              height: 150,
+              // color: Colors.red,
+              decoration: BoxDecoration(
+                color: Colors.blue[100],
+                shape: BoxShape.circle
+                // borderRadius: BorderRadius.circular(100)
           
-          CircleAvatar(
-             maxRadius: 60,
-              backgroundColor: Colors.blue[100],
-              child:
-             (usuario.photo!=null)
-              ?ClipOval(child: getImage(usuario.photo))
-              :Text(usuario.name.substring(0,2)),
               ),
+              child: 
+              (usuario.photo!=null && usuario.photo!='')
+              ?getImage(usuario.photo)
+              :Center(child: Text(usuario.name.substring(0,2)),),
+            ),
+          ),
+          
           Positioned(
             right: 1,                            
             child: IconButton(onPressed: ()async{
               final picker= ImagePicker();
-              final XFile? selectedFile=await picker.pickImage(source: ImageSource.gallery,imageQuality: 100);
+              final XFile? selectedFile=await picker.pickImage(source: ImageSource.gallery);
               if(selectedFile==null){
                 print('No hay foto');
               }else{
+                print('Hay foto');
                 authService.showImage(selectedFile.path);
                                  
               }
@@ -99,9 +112,14 @@ class _Avatar extends StatelessWidget {
       return null;
     }
     if(picture.startsWith('http')){
-      return NetworkImage(picture);
+
+      return FadeInImage(
+        placeholder: const AssetImage('assets/jar-loading.gif'),
+        image: NetworkImage(picture),
+        fit: BoxFit.fill
+        );
     }
-    return Image.file(File(picture));
+    return Image.file(File(picture),fit: BoxFit.fill,  );
     
 
   }
@@ -109,10 +127,18 @@ class _Avatar extends StatelessWidget {
 
 class _LoginForm extends StatelessWidget {
   final usuario;
-  const _LoginForm({Key? key,required this.usuario}) : super(key: key);
+  final usuarioService=UsuariosService();
+  
+   _LoginForm({Key? key,required this.usuario}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String email=usuario.email;
+    String? password;
+    String name=usuario.name;
+    String phone=usuario.phone;
+    File? photo;
+
     final authService=Provider.of<AuthService>(context);
     return Container(
       child: Form(
@@ -123,7 +149,7 @@ class _LoginForm extends StatelessWidget {
             TextFormField(
               initialValue: usuario.name,
               onChanged: (value){
-                authService.name=value;
+                name=value;
               },
               validator: (value){
                 return (value!='')?null:'Ingresa tu nombre';
@@ -137,7 +163,7 @@ class _LoginForm extends StatelessWidget {
             TextFormField(
               initialValue: usuario.phone,
               onChanged: (value){
-                authService.phone=value;
+                phone=value;
               },
               validator: (value){
                 return (value!.length==10)?null:'Formato de teléfono inválido';
@@ -151,7 +177,7 @@ class _LoginForm extends StatelessWidget {
             TextFormField(
               initialValue: usuario.email,
               onChanged: (value){
-                authService.email=value;
+                email=value;
               },
               validator: (value){
                 String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -166,11 +192,11 @@ class _LoginForm extends StatelessWidget {
             const SizedBox(height: 5,),
             TextFormField(
               onChanged: (value){
-                authService.password=value;
+                password=value;
               },
               validator: (value){
                 if(value!=''){
-                  return (value!.length>=6)?null:'Mínimo 6 caracteres';
+                  return (value!.length>=8)?null:'Mínimo 8 caracteres';
                 }
               },
               obscureText: true,
@@ -186,17 +212,17 @@ class _LoginForm extends StatelessWidget {
               ?null
               :
               ()async{
-                authService.isValidUpdate();
-                // if(authService.isValidRegister()){
-                //   FocusScope.of(context).unfocus();//Quitar el foco donde se encuentre
-                //  final registroOk= await authService.register();
-                //  if(registroOk==true){
-                //     Navigator.pushReplacementNamed(context, 'usuarios');
-                //  }else {
-                //     mostrarAlerta(context,'Datos incorrectos',registroOk['msg']);
-                //   }
+                if(authService.isValidUpdate()){
+                 FocusScope.of(context).unfocus();//Quitar el foco donde se encuentre
+                 final String imageUrl=await authService.uploadImage()??'';
+                final registroOk=await authService.updateUsuario(usuario.uid,imageUrl,name,phone,email,password);
+                password='';
+                if(registroOk!=true){
+                  mostrarAlerta(context,'Ocurrio un error','Algo salio mal');
+                }
+                
 
-                // }                 
+                }                   
               },
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               disabledColor: Colors.grey,

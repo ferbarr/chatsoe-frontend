@@ -17,12 +17,12 @@ enum ServerStatus {//Estados del server
 class SocketService with ChangeNotifier {
 
   ServerStatus _serverStatus = ServerStatus.Connecting;//Iniciar el estado del server
-  late IO.Socket _socket;//Instanciar socket
+   IO.Socket? _socket;//Instanciar socket
 
   ServerStatus get serverStatus => _serverStatus;//Obtener estado del server
   
-  IO.Socket get socket => _socket;//Obtener socket
-  Function get emit => _socket.emit;//Obtener emits
+  IO.Socket? get socket => _socket;//Obtener socket
+  Function get emit => _socket!.emit;//Obtener emits
 
   void connect() async {//Conectar al socket   
 
@@ -38,12 +38,12 @@ class SocketService with ChangeNotifier {
    
     });
 
-    _socket.on('connect', (_) {//Cuando se conecte
+    _socket?.on('connect', (_) {//Cuando se conecte
       _serverStatus = ServerStatus.Online;//Cambiar estado del server
       notifyListeners();
     });
 
-    _socket.on('disconnect', (_) {//Cuando se desconecte
+    _socket?.on('disconnect', (_) {//Cuando se desconecte
       _serverStatus = ServerStatus.Offline;//Cambiar estado del server
       notifyListeners();
     });
@@ -52,7 +52,7 @@ class SocketService with ChangeNotifier {
 
 
   void disconnect() {//Desconectar del socket
-    _socket.disconnect();
+    _socket?.disconnect();
   }
 
 }

@@ -5,6 +5,7 @@ import 'package:chat/services/services.dart';
 import 'package:chat/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
@@ -30,8 +31,8 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
     chatService=Provider.of<ChatService>(context,listen: false);
     socketService=Provider.of<SocketService>(context,listen: false);
     
-    socketService.socket.on('mensaje-personal', _escucharMensaje );
-    _cargarHistorial(chatService.usuaroPara.uid);
+    socketService.socket?.on('mensaje-personal', _escucharMensaje );
+    _cargarHistorial(chatService.usuaroPara.uid!);
   }
 
   void _cargarHistorial(String usuarioID)async{
@@ -73,10 +74,14 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
         title: Column(
           children: <Widget> [
             CircleAvatar(
-              maxRadius: 14,
+              maxRadius: 20,
               backgroundColor: Colors.blue[100],
-              child:  Text(usuarioPara.name.substring(0,2),style: const TextStyle(fontSize: 12),
-              ),
+              backgroundImage: (usuarioPara.photo!=null && usuarioPara.photo!='')
+              ?NetworkImage(usuarioPara.photo)
+              :null,
+              child: (usuarioPara.photo!=null && usuarioPara.photo!='')
+              ?null
+              :Text(usuarioPara.name.substring(0,2))
             ),
             const SizedBox(height: 3,),
              Text(usuarioPara.name,style: const TextStyle(color: Colors.black87,fontSize: 10),)
@@ -85,7 +90,9 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
         ),
         actions: [
           IconButton(
-            onPressed:(){},
+            onPressed:()async{
+              bool? res = await FlutterPhoneDirectCaller.callNumber(usuarioPara.phone);
+            },
             icon: const Icon(Icons.phone_outlined,size: 30,color:Colors.green),
           ),
         ],
@@ -153,7 +160,7 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
               :Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: IconTheme(
-                  data: IconThemeData(color: Color.fromRGBO(120,175,129,1)),
+                  data: const IconThemeData(color: Color.fromRGBO(120,175,129,1)),
                   child: IconButton(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
@@ -175,7 +182,7 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
     if(texto.length==0)return;
     final newMessage= ChatMessage(
       texto: texto.trim(),
-      uid: authService.usuario.uid,
+      uid: authService.usuario.uid!,
       animationController: AnimationController(vsync: this,duration: const Duration(milliseconds: 400)),
       
       );
@@ -200,7 +207,7 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
     for(ChatMessage message in _messages){
       message.animationController.dispose();//Limpiar las animaciones
     }
-    socketService.socket.off('mensaje-personal');
+    socketService.socket?.off('mensaje-personal');
     super.dispose();
   }
 }

@@ -49,7 +49,6 @@ class LoadingPage extends StatelessWidget {
     final autenticado=await authService.isLoggedIn();
 
     final licTrue=sliderService.licP;
-    print(licTrue);
     if(licTrue){
       if(autenticado){
         socketService.connect();

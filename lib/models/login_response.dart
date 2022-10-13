@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final loginResponse = loginResponseFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:chat/models/usuario.dart';
@@ -33,5 +29,3 @@ class LoginResponse {
         "token": token,
     };
 }
-
-

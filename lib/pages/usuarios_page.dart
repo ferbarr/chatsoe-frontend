@@ -20,14 +20,13 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   @override
   void initState() {
-    _cargarUsuarios();
-
-  socketService=Provider.of<SocketService>(context,listen: false);
-    
-  socketService.socket.on('update-estado', (data)=>{_cargarUsuarios()} );
-
-
     super.initState();
+    _cargarUsuarios();
+    socketService=Provider.of<SocketService>(context,listen: false);
+    socketService.socket?.on('update-estado', (data)=>{_cargarUsuarios()} );
+
+
+    
   }
 
   @override
@@ -91,7 +90,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
   }
 
   ListTile _usuarioListTile(Usuario usuario) {//Metodo para ListTile y recibe info del usuario
-    return ListTile(
+    return  ListTile(
       onTap: (){
         final chatService=Provider.of<ChatService>(context,listen: false);
         chatService.usuaroPara=usuario;
@@ -99,10 +98,17 @@ class _UsuariosPageState extends State<UsuariosPage> {
         
         },
         title: Text(usuario.name,style: const TextStyle(fontSize: 16),),
-        // subtitle: Text(usuario.email),
+    
         leading: CircleAvatar(
+          maxRadius: 20,
           backgroundColor: Colors.blue[100],
-          child: Text(usuario.name.substring(0,2)),
+          backgroundImage: (usuario.photo!=null && usuario.photo!='')
+          ?NetworkImage(usuario.photo)
+          :null,
+
+          child: (usuario.photo!=null && usuario.photo!='')
+          ?null
+          :Text(usuario.name.substring(0,2))
         ),
         trailing: Container(//Contenido a la derecha
           width:10,
@@ -113,6 +119,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
           ),
         ),
       );
+      
   }
 
   _cargarUsuarios()async{

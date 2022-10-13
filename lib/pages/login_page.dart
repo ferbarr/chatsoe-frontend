@@ -88,7 +88,7 @@ class _LoginForm extends StatelessWidget {
                 authService.password=value;
               },
               validator: (value){
-                return (value!=null && value.length>=6)?null:'Mínimo 6 caracteres';
+                return (value!.length>=8)?null:'Mínimo 8 caracteres';
               },
               obscureText: true,
               autocorrect: false,
