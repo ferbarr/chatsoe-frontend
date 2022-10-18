@@ -99,17 +99,28 @@ class _UsuariosPageState extends State<UsuariosPage> {
         },
         title: Text(usuario.name,style: const TextStyle(fontSize: 16),),
     
-        leading: CircleAvatar(
-          maxRadius: 20,
-          backgroundColor: Colors.blue[100],
-          backgroundImage: (usuario.photo!=null && usuario.photo!='')
-          ?NetworkImage(usuario.photo)
-          :null,
-
-          child: (usuario.photo!=null && usuario.photo!='')
-          ?null
-          :Text(usuario.name.substring(0,2))
+        leading:
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Container(
+                width: 50,
+                height:50,
+            
+                decoration: BoxDecoration(
+                  color: Colors.blue[100],
+                  shape: BoxShape.circle          
+                ),
+                child: 
+                (usuario.photo!=null && usuario.photo!='')
+                ?FadeInImage(
+                 placeholder: const AssetImage('assets/loading-colors.gif'),
+                 image: NetworkImage(usuario.photo),
+                  fit: BoxFit.cover,
+                )
+                :Center(child: Text(usuario.name.substring(0,2)),),
+              ),
         ),
+
         trailing: Container(//Contenido a la derecha
           width:10,
           height: 10,

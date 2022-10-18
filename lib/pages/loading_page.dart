@@ -20,7 +20,7 @@ class LoadingPage extends StatelessWidget {
                
                 child: Column(
                   children: [
-                    const SizedBox(height: 100,),
+                    const SizedBox(height: 150,),
                     const Image(
                       width: 200,
                       height: 200,

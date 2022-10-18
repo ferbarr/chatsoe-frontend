@@ -26,10 +26,10 @@ class ProfilePage extends StatelessWidget {
       
       backgroundColor:const Color.fromARGB(255, 232, 232, 232),
       appBar: AppBar(
-     
+        backgroundColor: const Color.fromARGB(255, 68, 114, 164),
         centerTitle: true,
         title: Text(usuario.name),
-        // backgroundColor: Colors.white,
+  
       ),
       body:Center(
         child: SingleChildScrollView(
@@ -76,12 +76,10 @@ class _Avatar extends StatelessWidget {
             child: Container(
               width: 150,
               height: 150,
-              // color: Colors.red,
+     
               decoration: BoxDecoration(
                 color: Colors.blue[100],
-                shape: BoxShape.circle
-                // borderRadius: BorderRadius.circular(100)
-          
+                shape: BoxShape.circle          
               ),
               child: 
               (usuario.photo!=null && usuario.photo!='')
@@ -96,9 +94,9 @@ class _Avatar extends StatelessWidget {
               final picker= ImagePicker();
               final XFile? selectedFile=await picker.pickImage(source: ImageSource.gallery);
               if(selectedFile==null){
-                print('No hay foto');
+          
               }else{
-                print('Hay foto');
+             
                 authService.showImage(selectedFile.path);
                                  
               }
@@ -114,12 +112,12 @@ class _Avatar extends StatelessWidget {
     if(picture.startsWith('http')){
 
       return FadeInImage(
-        placeholder: const AssetImage('assets/jar-loading.gif'),
+        placeholder: const AssetImage('assets/loading-colors.gif'),
         image: NetworkImage(picture),
-        fit: BoxFit.fill
+        fit: BoxFit.cover
         );
     }
-    return Image.file(File(picture),fit: BoxFit.fill,  );
+    return Image.file(File(picture),fit: BoxFit.cover,  );
     
 
   }

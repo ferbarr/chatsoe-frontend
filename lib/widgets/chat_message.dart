@@ -30,14 +30,19 @@ class ChatMessage extends StatelessWidget {
   Widget _myMessage() {
     return Align(//Alinear widget
       alignment: Alignment.centerRight,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 5,left: 100,right: 5),
-        decoration:  BoxDecoration(
-          color: const Color.fromRGBO(37,80,121,1),
-          borderRadius: BorderRadius.circular(20)
-        ),
-        padding: const EdgeInsets.all(8.0),
-        child: Text(texto,style: const TextStyle(color: Colors.white,fontSize: 15.5),),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(bottom: 5,left: 100,right: 5),
+            decoration:  BoxDecoration(
+              color: const Color.fromRGBO(37,80,121,1),
+              borderRadius: BorderRadius.circular(20)
+            ),
+            padding: const EdgeInsets.all(8.0),
+            child: Text(texto,style: const TextStyle(color: Colors.white,fontSize: 15.5),),
+          ),
+          
+        ],
       ),
 
     );

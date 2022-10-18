@@ -124,7 +124,7 @@ class AuthService extends ChangeNotifier{
       final loginResponse= loginResponseFromJson(resp.body);
       
       usuario=loginResponse.usuario;
-      await _guardarToken(loginResponse.token!);
+      await _guardarToken(loginResponse.token);
       autenticando=false;
       return true;
     }else{
@@ -168,7 +168,7 @@ class AuthService extends ChangeNotifier{
     if(resp.statusCode==200){
       final loginResponse= loginResponseFromJson(resp.body);
       usuario=loginResponse.usuario;
-      await _guardarToken(loginResponse.token!);
+      await _guardarToken(loginResponse.token);
       autenticando=false;
       return true;
     }else{
@@ -192,7 +192,7 @@ class AuthService extends ChangeNotifier{
     if(resp.statusCode==200){
       final loginResponse= loginResponseFromJson(resp.body);
       usuario=loginResponse.usuario;
-      await _guardarToken(loginResponse.token!);
+      await _guardarToken(loginResponse.token);
       return true;
     }else{
       logout();

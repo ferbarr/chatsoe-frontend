@@ -32,7 +32,7 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
     socketService=Provider.of<SocketService>(context,listen: false);
     
     socketService.socket?.on('mensaje-personal', _escucharMensaje );
-    _cargarHistorial(chatService.usuaroPara.uid!);
+    _cargarHistorial(chatService.usuaroPara.uid);
   }
 
   void _cargarHistorial(String usuarioID)async{
@@ -73,16 +73,26 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
         backgroundColor: Colors.white,
         title: Column(
           children: <Widget> [
-            CircleAvatar(
-              maxRadius: 20,
-              backgroundColor: Colors.blue[100],
-              backgroundImage: (usuarioPara.photo!=null && usuarioPara.photo!='')
-              ?NetworkImage(usuarioPara.photo)
-              :null,
-              child: (usuarioPara.photo!=null && usuarioPara.photo!='')
-              ?null
-              :Text(usuarioPara.name.substring(0,2))
-            ),
+              ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Container(
+                width: 40,
+                height:40,
+            
+                decoration: BoxDecoration(
+                  color: Colors.blue[100],
+                  shape: BoxShape.circle          
+                ),
+                child: 
+                (usuarioPara.photo!=null && usuarioPara.photo!='')
+                ?FadeInImage(
+                 placeholder: const AssetImage('assets/loading-colors.gif'),
+                 image: NetworkImage(usuarioPara.photo),
+                  fit: BoxFit.cover,
+                )
+                :Center(child: Text(usuarioPara.name.substring(0,2)),),
+              ),
+        ),
             const SizedBox(height: 3,),
              Text(usuarioPara.name,style: const TextStyle(color: Colors.black87,fontSize: 10),)
 
@@ -182,7 +192,7 @@ class _ChatPageState extends State<ChatPage>with TickerProviderStateMixin{//Para
     if(texto.length==0)return;
     final newMessage= ChatMessage(
       texto: texto.trim(),
-      uid: authService.usuario.uid!,
+      uid: authService.usuario.uid,
       animationController: AnimationController(vsync: this,duration: const Duration(milliseconds: 400)),
       
       );
